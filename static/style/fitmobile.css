@@ -1,0 +1,118 @@
+@media screen  and (orientation:landscape) and (max-width: 900px) {
+    html,body{height:100%;overflow-x:hidden;}
+    .login {
+position: absolute;
+top: 85px;
+width: 700px;
+left: 145px;
+bottom: 0px;
+background-color: #dcdddd;
+
+}
+#divhe {
+display: flex;
+height: 548px;
+position: relative;
+
+}
+div.search {
+
+height: 79px;
+width: 900px;
+min-width: 0px;
+border-bottom: 2px solid #f1f1f1;
+background-image: linear-gradient(to top, #223249 50%, #424d5d 50%);
+
+}
+.ediv{
+width: 20px;
+height: 20px;
+top: top*0.5;
+
+}
+.leftbox ul li {
+
+border-bottom: 2px solid #ffffff;
+border-image: linear-gradient(to right, #578aef, white, #578aef) 1;
+text-align: center;
+width: 130px;
+height: 50px;
+margin-left: 0px;
+}
+#fediv {
+width: 1600px;
+height: 240px;
+position: relative;
+background-color: #e9e9e9;
+margin-right: 20px;
+padding-top: 20px;
+
+}
+.leftbox {
+top: 85px;
+bottom: 0px;
+background-color: #c1cbd2;
+width: 130px;
+border: 2px solid #ffffff;
+border-left: none;
+position: absolute;
+}
+body {
+
+min-height: 904px;
+min-width: 900px;
+overflow: hidden;
+height: 100%;
+font-weight: 500;
+font-family: "宋体", "Segoe UI", "Lucida Grande", Helvetica, Arial, sans-serif, FreeSans, Arimo;
+}
+.tablecon{
+margin-top: -10px;
+}
+.tablespace {
+
+border-collapse: collapse;
+table-layout: fixed;
+font-family: Times New Roman, SimSun;
+width: 150px;
+margin-left: 17px;
+height: 200px;
+margin-top: 17px;
+}
+.tabcontainer {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    background-image: url(../image/w2.png);
+    background-repeat: no-repeat;
+    background-size: 15%;
+    background-color: #e9e9e9;
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 50px;
+    bottom: -20px;
+}
+.navleft{
+    display: none;
+}
+.navright{
+    margin-top: -30px;
+
+}
+.operation{
+    display: none;
+}
+.table_card .tab {
+    height: 0px;
+    font-size: 14px;
+    width: 900px;
+    text-align: center;
+    margin-top: 0px;
+}
+.newslist01 {
+    font-size: 25px;
+    margin-top: 100px;
+    margin-left: -35px;
+    width: 1000px;
+}
+}

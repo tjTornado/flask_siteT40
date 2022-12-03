@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="js/jquery.min.js"></script>
+    <link href="style/font-awesome.min.css" rel="stylesheet">
+    <link href="style/admin.css" rel="stylesheet" type="text/css" />
+    <script src="js/jquery-ui.min.js"></script>
+    <script src="js/axios.min.js"></script>
+    <link href="style/fit.css" rel="stylesheet" type="text/css" />
+    <meta name="viewport" content="width=device-width,maximum-scale=1.0,initial-scale=1,user-scalable=no">
+    <link href="style/fitmobile.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="js/cookie.js"></script>
+    <title>MOVER site T40</title>
+</head>
+
+<body class="bod">
+    <div class="search">
+        <div class="imglo">
+        </div>
+
+        <div><a href="workspace.html" style="background-image: url(image/set.png);" class="herder-left">工作空间</a>
+        </div>
+        <div>
+            <ul id="list">
+                <li>
+                    <a href="#javascript" style="background-image: url(image/mission.png);" class="herder-left">用户信息</a>
+                    <ul>
+                        <li><a href="muser.html">用户管理</a></li>
+                        <li><a href="mulog.html">用户日志</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div class="opuser herder-left">
+            操作管理员
+        </div>
+        <div class="verticalw">
+            <a class="herder-left" style="width: 130px; background-image: url(image/shutdown_w.png);"
+                onclick="removeCookies('userid')">安全退出</a>
+        </div>
+    </div>
+
+    <div class="leftbox">
+        <div class="ltopbox">用户信息</div>
+        <ul>
+            <li><a id="a" href="#" style="background-color: #f1f1f1;color: #5cb4e3;" class="dropbtn">用户管理</a></li>
+            <li> <a href="mulog.html" class="xinxi">用户日志</a></li>
+        </ul>
+    </div>
+
+    <div class="login">
+        <div class="timu">
+            <div class="wtitle">用户信息</div>
+            <div class="jiantou"></div>
+            <div class="wtitle">用户管理</div>
+            <div class="jiantou"></div>
+        </div>
+
+        <div class="container" id="app">
+            <div class="butto2">
+                <input type="button" style="width:120px;" class="adduser" @click="add" value="+创建用户">
+            </div>
+
+            <div class="tabcontainer">
+                <table>
+                    <tbody id="s3">
+                        <tr>
+                            <th>id</th>
+                            <th>员工账号</th>
+                            <th>员工密码</th>
+                            <th colspan="2">操作</th>
+                        </tr>
+                        <tr v-cloak v-for="(item, index) of slist">
+                            <td>{{index+1}}</td>
+                            <td>{{item.yonghu}}</td>
+                            <td>{{item.mima}}</td>
+                            <td><a href="javascript:;" class="buinp" @click="showOverlaye(index)">修改</a> </td>
+                            <td><a href="javascript:;" class="buinp" @click="del(index)">删除</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <model :list='selectedlist' :isactive="isActive" v-cloak @change="changeOverlay" @modify="modify">
+            </model>
+            <modele :list='selectedliste' :isactivee="isActivee" v-cloak @change="changeOverlaye" @modifye="modifye">
+            </modele>
+        </div>
+
+    </div>
+
+
+    <script type="text/javascript" src="js/vue.js"></script>
+    <script type="text/javascript">
+        Vue.component('model', {
+            props: ['list', 'isactive',],
+            template: `<div class="overlay" v-show="isactive">
+                        <div class="con">
+                            <h2 class="title">创建用户</h2>
+                            <div class="content">
+                                <p><img src="image/w1.png" alt=""><span style="font-family: 微软雅黑;">&nbsp;&nbsp;&nbsp;</span>账号:</p>
+                                <input type="text" class="addws"  v-model="modifylist.yonghu" id='username' autocomplete="off">
+                                <p><img src="image/w1.png" alt=""><span style="font-family: 微软雅黑;">&nbsp;&nbsp;&nbsp;</span>密码:</p>
+                                <input type="text" name="mima" class="addws" id="mima" v-model="modifylist.mima"autocomplete="off">                                                 
+                                <p>
+                                    <button @click="changeActive" value="取消" >取消</button>
+                                    <button @click="modify" value="确定" >确定</button>
+                        
+                                </p>
+                        </div>
+                        </div>
+                    </div>`,
+            computed: {
+                modifylist() {
+                    return this.list;
+                }
+            },
+            methods: {
+                changeActive() {
+                    this.$emit('change');
+
+
+                },
+                modify() {
+                    this.$emit('modify', this.modifylist);
+                },
+            }
+        });
+        Vue.component('modele', {
+            props: ['list', 'isactivee',],
+            template: `<div class="overlay" v-show="isactivee">
+                        <div class="con">
+                            <h2 class="title">修改用户</h2>
+                            <div class="content">                              
+                                <p> <img src="image/w1.png" alt=""> <span style="font-family: 微软雅黑;">&nbsp;&nbsp;</span>密码:</p>
+                                <input type="text" name="mima" class="addws" id="mima" v-model="modifyelist.mima"autocomplete="off">                                                 
+                                <p>
+                                    <button @click="changeActive" value="取消" >取消</button>
+                                    <button @click="modifye" value="确定">确定</button>
+                        
+                                </p>
+                        </div>
+                        </div>
+                    </div>`,
+            computed: {
+                modifyelist() {
+                    return JSON.parse(JSON.stringify(this.list));
+                }
+            },
+            methods: {
+                changeActive() {
+                    this.$emit('change');
+
+
+                },
+                modifye() {
+                    this.$emit('modifye', this.modifyelist);
+                },
+            }
+        });
+        var app = new Vue({
+            el: '#app',
+            data: {
+                isActive: false,
+                isActivee: false,
+                selected: -1,
+                selectedlist: {},
+                selectedliste: {},
+                slist: [],
+                searchelist: [],
+                list: [
+                ],
+                url: ""
+            },
+            created() {
+                this.setSlist(this.list);
+            },
+            mounted() {
+                var that = this
+                axios.get(
+                    'getUser'
+                )
+                    .then(function (response) {
+                        that.list = JSON.parse(JSON.stringify(response.data.user));
+                        that.setSlist(that.list);
+                    })
+                    .catch(function (err) { console.log(123); });
+
+            },
+
+            methods: {
+                // 修改数据
+                showOverlaye(index) {
+                    this.selected = index;
+                    this.selectedliste = this.list[index];
+                    this.changeOverlaye();
+                },
+                showOverlay(index) {
+                    this.selected = index;
+                    this.selectedlist = this.list[index];
+                    this.url = "changeUser";
+                    this.isActive = true;
+                },
+                // 点击保存按钮(修改)
+                modifye(arr) {
+                    this.$emit('modifye', this.modifyelist);
+                    const params = new URLSearchParams();
+                    params.append('username', arr.yonghu,);
+                    params.append('password', arr.mima);
+                    var that = this;
+                    axios.post("changeUser", params,
+                        {
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                        }
+                    )
+                        .then(function (response) {
+
+                            Vue.set(that.list, that.selected, arr);
+                            that.setSlist(that.list);
+                        })
+                        .catch(function (err) { alert("修改用户失败")})
+
+                    this.setSlist(this.list);
+                    this.changeOverlaye();
+                },
+                modify(arr) {
+                    console.log(this.selected);
+
+                    var s3 = document.getElementById("s3");
+                    if (arr.yonghu === '' || arr.mima === '') {
+                        alert("请检查信息是否填写完整")
+                        this.changeOverlay();
+                        return false
+                    }
+                    for (var i = 0; i < s3.rows.length - 1; i++) {
+
+                        if (this.list[i].yonghu === arr.yonghu) {
+                            alert('当前账号已重复')
+                            this.changeOverlay();
+                            return false
+                        }
+                    }
+
+                    if (arr.yonghu === "2021") {
+                        alert('当前账号为管理员账号')
+                        return false
+                    }
+
+                    if (arr.yonghu === "2022") {
+                        alert('当前账号为超市账号')
+                        return false
+                    }
+
+                    const params = new URLSearchParams();
+
+                    params.append('username', arr.yonghu,);
+                    params.append('role', arr.mima);
+
+                    var that = this;
+
+                    axios.post('/admin/useradd', params,
+                        {
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                        }
+                    ).then(function (response) {
+                        var res = response.msg;
+                        //请求数据库/admin/usershow  请求用户数据表
+                        that.list.push(arr);
+                        that.setSlist(that.list);
+
+                    }).catch(function (err) { alert("创建用户失败") })
+
+                    this.changeOverlay();
+
+                    // }
+                    // console.log('1234');
+                    // this.list.push(arr);
+                    // this.setSlist(this.list);
+                    // this.changeOverlay();
+                },
+                add: function () {
+
+                    this.selectedlist = {
+                        yonghu: '',
+                        mima: '',
+
+                    };
+                    this.url = "addUser";
+                    this.isActive = true;
+                },
+                // delete list in index location
+                del(index) {
+                    var that = this;
+                    const params = new URLSearchParams();
+                    params.append('username', this.list[index].yonghu,);
+                    axios.post("deleteUser", params,
+                        {
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                        }
+                    ).then(function (response) {
+                        console.log(that.url);
+                        var res = response.data;
+                        that.list.splice(index, 1);
+                        that.setSlist(that.list);
+                    }).catch(function (err) { console.log('123'); return; })
+                },
+                changeOverlaye() {
+                    this.isActivee = !this.isActivee;
+
+                },
+                changeOverlay() {
+                    this.isActive = !this.isActive;
+                },
+                // 获取需要渲染到页面中的数据
+                setSlist(arr) {
+                    this.slist = JSON.parse(JSON.stringify(arr));
+                },
+                // 搜索
+
+            },
+        })
+    </script>
+
+</body>
+
+</html>

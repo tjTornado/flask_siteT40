@@ -1,0 +1,50 @@
+create table `ip`
+(`id` int PRIMARY KEY,
+ `address` varchar(30)
+)
+
+create TABLE user (
+id int PRIMARY KEY AUTO_INCREMENT,
+username varchar(50) not null,
+role int default 0 comment '2 admin 1 超市员工 0 操作员工'
+)
+
+create table material(
+id int  PRIMARY KEY AUTO_INCREMENT,
+name varchar(30)  not null,
+minimum int not null DEFAULT 5 
+)
+
+
+
+create table shelves(
+id int  PRIMARY KEY AUTO_INCREMENT,
+`name` varchar(30)  not null,
+`sort` varchar(30)  not null,
+amount int not null DEFAULT 0,
+presets  int not null DEFAULT 0 comment '防止空箱在生成任务时透支',
+`update_time` TIMESTAMP not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP
+)
+
+
+
+create table `task`(
+id int  PRIMARY KEY AUTO_INCREMENT,
+`username` varchar(50)  not null,
+`taskid` varchar(50)  not null,
+`material` varchar(30)  not null,
+`start_time` timestamp default CURRENT_TIMESTAMP,
+`over_time` timestamp,
+`state` int not null DEFAULT 0
+)
+
+
+
+create table `feed_log`(
+id int  PRIMARY KEY AUTO_INCREMENT,
+`username` varchar(50)  not null,
+`shelves_name` varchar(30)  not null,
+`sort` varchar(30)  not null,
+amount int not null,
+`option_time` timestamp default CURRENT_TIMESTAMP
+)

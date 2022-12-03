@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery.cookie.js"></script>
+    <link href="style/admin.css" rel="stylesheet" type="text/css" />
+    <meta name="viewport" content="width=device-width,maximum-scale=1.0,initial-scale=1,user-scalable=no">
+    <link href="style/fit.css" rel="stylesheet" type="text/css" />
+    <link href="style/fitmobile.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="js/cookie.js"></script>
+    <title>MOVER site T40</title>
+
+</head>
+
+<body class="bod">
+    <div class="search">
+        <div class="imglo">
+        </div>
+
+        <div><a href="workspace.html" style="background-image: url(image/set.png);" class="herder-left">工作空间</a>
+        </div>
+        <div>
+            <ul id="list">
+                <li>
+                    <a href="#javascript" style="background-image: url(image/mission.png);" class="herder-left">用户信息</a>
+                    <ul>
+                        <li><a href="muser.html">用户管理</a></li>
+                        <li><a href="mulog.html">用户日志</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div class="opuser herder-left">
+            操作管理员
+        </div>
+
+        <div class="verticalw">
+            <a class="herder-left" style="width: 130px; background-image: url(image/shutdown_w.png);" onclick="removeCookies('userid')">安全退出</a>
+        </div>
+    </div>
+
+    <div class="wname">
+        <div class="leftbox">
+            <div class="ltopbox">工作空间{{workspace_name}}</div>
+            <ul>
+                <li><a id="a" href="#" style="background-color: #f1f1f1;color: #5cb4e3; padding: 10px 50px;"
+                        class="dropbtn">查看</a></li>
+
+                <li> <a href="psetup.html" class="xinxi">物料设置</a></li>
+            </ul>
+        </div>
+
+        <div class="login">
+            <div class="timu">
+                <div class="wtitle">工作空间{{workspace_name}}</div>
+                <div class="jiantou"></div>
+                <div class="wtitle">查看</div>
+                <div class="jiantou"></div>
+
+            </div>
+            <div class="container" id="admin">
+                <div id="divhe">
+                    <div id="fediv">
+                        <h2 style="margin-left: 45%;">{{workspace_name}}-T40库位</h2>
+                        <div id="fedive">
+                            <table class="abc">
+                                <tr style="height: 70px;">
+                                    <th></th>
+                                    <th>第1列</th>
+                                    <th>第2列 </th>
+                                    <th>第3列</th>
+                                    <th>第4列</th>
+                                    <th>第5列</th>
+                                    <th>第6列</th>
+                                </tr>
+                                <tr>
+                                    <td class="layer">
+                                        <p>第5层</p>
+                                        <p>（物料）</p>
+
+                                    </td>
+                                    <td v-for="item in lay5">
+                                        <h2>{{item.ID}}</h2>
+                                        <img src="image/1.png" alt="">
+                                        <p>{{item.mat}}，{{item.count}}</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="layer">
+                                        <p>第4层</p>
+                                        <p>（物料）</p>
+                                    </td>
+                                    <td v-for="item in lay4">
+                                        <h2>{{item.ID}}</h2>
+                                        <img src="image/1.png" alt="">
+                                        <p>{{item.mat}}，{{item.count}}</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="layer">
+                                        <p>第3层</p>
+                                        <p>（物料）</p>
+                                    </td>
+                                    <td v-for="item in lay3">
+                                        <h2>{{item.ID}}</h2>
+                                        <img src="image/1.png" alt="">
+                                        <p>{{item.mat}}，{{item.count}}</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="layer">
+                                        <p>第2层</p>
+                                        <p>（物料）</p>
+                                    </td>
+                                    <td v-for="item in lay2">
+                                        <h2>{{item.ID}}</h2>
+                                        <img src="image/1.png" alt="">
+                                        <p>{{item.mat}}，{{item.count}}</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="layer">
+                                        <p>第1层</p>
+                                        <p>（空箱）</p>
+                                    </td>
+                                    <td v-for="item in lay1">
+                                        <h2>{{item.ID}}</h2>
+                                        <img src="image/1.png" alt="">
+                                        <p>{{item.mat}}，{{item.count}}</p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <div>
+                                <ul class="allshow">
+                                    <li class="catecolorp legend" id="12">
+                                        <label>无货</label>
+                                    <li class="catecolorl legend">
+                                        <label>有货</label>
+                                    </li>
+
+
+                                </ul>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="tablecon">
+                        <h1>物料种类</h1>
+                        <table border="1" class="tablespace">
+                            <tr v-for="item in all_thing" class="mater">
+                                <td>{{item.name}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+    <script type="text/javascript" src="js/vue.js"></script>
+    <script src="js/axios.min.js"></script>
+
+
+    <script>
+        var admin = new Vue({
+            el: '.wname',
+            data: {
+                workspace_name: '',
+                all_thing: [],
+                layer5: '',
+                layer4: '',
+                layer3: '',
+                layer2: '',
+                layer1: '',
+                lay5: [{ "ID": "A15", "mat": '无', 'count': 0 }, { "ID": "A25", "mat": '无', 'count': 0 }, { "ID": "B35", "mat": '无', 'count': 0 }, { "ID": "B45", "mat": '无', 'count': 0 }, { "ID": "C55", "mat": '无', 'count': 0 }, { "ID": "C65", "mat": '无', 'count': 0 }],
+                lay4: [{ "ID": "A14", "mat": '无', 'count': 0 }, { "ID": "A24", "mat": '无', 'count': 0 }, { "ID": "B34", "mat": '无', 'count': 0 }, { "ID": "B44", "mat": '无', 'count': 0 }, { "ID": "C54", "mat": '无', 'count': 0 }, { "ID": "C64", "mat": '无', 'count': 0 }],
+                lay3: [{ "ID": "A13", "mat": '无', 'count': 0 }, { "ID": "A23", "mat": '无', 'count': 0 }, { "ID": "B33", "mat": '无', 'count': 0 }, { "ID": "B43", "mat": '无', 'count': 0 }, { "ID": "C53", "mat": '无', 'count': 0 }, { "ID": "C63", "mat": '无', 'count': 0 }],
+                lay2: [{ "ID": "A12", "mat": '无', 'count': 0 }, { "ID": "A22", "mat": '无', 'count': 0 }, { "ID": "B32", "mat": '无', 'count': 0 }, { "ID": "B42", "mat": '无', 'count': 0 }, { "ID": "C52", "mat": '无', 'count': 0 }, { "ID": "C62", "mat": '无', 'count': 0 }],
+                lay1: [{ "ID": "A11", "mat": '无', 'count': 0 }, { "ID": "A21", "mat": '无', 'count': 0 }, { "ID": "B31", "mat": '无', 'count': 0 }, { "ID": "B41", "mat": '无', 'count': 0 }, { "ID": "C51", "mat": '无', 'count': 0 }, { "ID": "C61", "mat": '无', 'count': 0 }],
+                index: 8,
+            },
+            created() {
+                var that = this;
+
+                axios.get(
+                    "getWork",
+                )
+                    .then(function (response) {
+
+                        that.workspace_name = (response.data.work[0].name);
+                        console.log(that.workspace_name) //3.接收后端返回的参数
+
+                    })
+                    .catch(function (err) { })
+
+
+            },
+            methods: {
+                img(count) {
+                    if (count > 0) {
+                        return "image/2.png";
+                    }
+                    else {
+                        return "image/1.png";
+                    }
+                },
+
+            }
+        })
+    </script>
+    <script>
+        window.onload = function () {
+            // post();
+            all_thing();
+        }
+
+        function all_thing() {
+
+            const params = new URLSearchParams();
+            params.append('db', admin.workspace_name,);
+            axios.post('getMaterial', params, //获取位置
+                {
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                })
+                .then(function (response) {
+                    admin.all_thing = response.data.location
+
+                })
+                .catch(function (err) { })
+        }
+    </script>
+</body>
+
+</html>

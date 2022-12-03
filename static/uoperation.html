@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="style/admin.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="js/cookie.js"></script>
+    <link href="style/fit.css" rel="stylesheet" type="text/css" />
+    <link href="style/fitmobile.css" rel="stylesheet" type="text/css" />
+    <meta name="viewport" content="width=device-width,maximum-scale=1.0,initial-scale=1,user-scalable=no">
+    <title>MOVER site T40</title>
+    <style>
+        .hidden-columns {
+            display: none;
+        }
+
+        .el-table__header-wrapper {
+            margin-bottom: -20px;
+            margin-top: 1%;
+            margin-left: -17px;
+            width: 100%;
+            background-color: #e9e9e9;
+        }
+
+        span.el-table__empty-text {
+            margin-left: 50%;
+            margin-top: 15%;
+            display: inline-block;
+        }
+
+        @media screen and (max-width:600px) {
+            .herder-left {
+                text-decoration: none;
+                color: white;
+                line-height: 79px;
+                display: inline-block;
+                width: 93px;
+                height: 77px;
+                font-size: 14px;
+                text-align: center;
+                text-indent: 2.5em;
+                background-size: 15%;
+                background-repeat: no-repeat;
+                background-position: 1.5em center;
+            }
+
+            .verticalw {
+                border-left: 2px solid #f1f1f1;
+                font-size: 14px;
+                width: 115px;
+                height: 77px;
+                position: absolute;
+                right: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="search bar3">
+        <div class="imglo">
+        </div>
+        <div>
+            <a href="uoperation.html" style="background-image: url(image/set.png);" class="herder-left">叫料</a>
+        </div>
+
+        <div><a href="wulog.html" style="background-image: url(image/Wsite2.png);" class="herder-left">任务日志</a>
+        </div>
+        <div class="opuser herder-left">
+            操作用户
+        </div>
+        <div class="verticalw"><a style="background-image: url(image/shutdown_w.png); width: 130px;" class="herder-left"
+                onclick="removeCookies('userid')">安全退出</a> </div>
+
+
+    </div>
+
+    <div>
+        <div class="leftbox">
+            <div class="ltopbox">叫料</div>
+        </div>
+
+
+        <div class="login lleftbox">
+            <div class="timu">
+                <div class="wtitle">叫料</div>
+                <div class="jiantou"></div>
+            </div>
+
+
+            <div class="container" id="root">
+                <div class="butto3">
+                    <span id="siteID">C1</span>
+
+                    <select name="" class="butto1" id="material">
+                        <option value="">请选择物料名称</option>
+                        <option v-for="item in material" v-bind:value="item.name" v-text="item.name"></option>
+                    </select>
+
+                    <input type="button" class="add" onclick="add()" value="叫料">
+                </div>
+
+                <div class="tabcontainer">
+                    <table id='ptab'>
+                        <tbody id="ntable">
+                            <tr>
+                                <th>序号</th>
+                                <th>账号</th>
+                                <th>任务号</th>
+                                <th>站点</th>
+                                <th>物料</th>
+
+                                <th>开始时间</th>
+                                <th>状态</th>
+                                <th style="width: 200px;">操作</th>
+                            </tr>
+                            <tr v-cloak v-for="(item, index) of tableData">
+                                <td>{{index+1}}</td>
+                                <td>{{item.userid}}</td>
+                                <td>{{item.taskid}}</td>
+                                <td>{{item.direction}}</td>
+                                <td>{{item.material}}</td>
+                                <td>{{item.time}}</td>
+                                <td>{{item.condition}}</td>
+                                <td>
+                                    <span><a href='#' class='buinp' @click=del(index)>取消</a></span>
+                                </td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="del_content" id="filledit" style="display: none;">
+        <p>叫料</p>
+        <div class="call">
+            <button id="delefill" class="bot1">取消</button>
+            <button id="editfill" class="bot2">确认</button>
+        </div>
+
+    </div>
+    <!--loading-->
+    <div id="loading" style="display: none;">
+        <div id="rond">
+            <div id="test"></div>
+        </div>
+        <div id="load">
+            <p>loading</p>
+        </div>
+    </div>
+</body>
+<script src="js/vue.js"></script>
+<script src="js/axios.min.js"></script>
+<script src="js/index.js"></script>
+<script>
+    var db = localStorage.getItem("b");
+    function clock() {
+
+        const params = new URLSearchParams();
+        params.append('db', db);
+        axios.post("getTask", params, {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
+            .then(function (response) {
+
+                root.tableData = response.data.task //3.接收后端返回的参数
+
+            })
+            .catch(function (err) { })
+    }
+    var root = new Vue({
+        el: '#root',
+        data: {
+            material: [],
+            tableData: [],
+            flag: false,
+            time: '',
+            workspace: [],
+
+        },
+        mounted() {
+            window.alerte = this.alerte; //可以直接调用vue的方法
+        },
+        methods: {
+            // 删除单个行
+            del(index) {
+
+                const params = new URLSearchParams();
+                params.append('name', this.tableData[index].taskid);
+                params.append('type', 'task');
+                console.log("209");
+                axios.post(
+                    'del', params, {
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                }
+
+                )
+                    .then(function (response) {
+                        var res = response.data;
+
+                    })
+                    .catch(function (err) { })
+
+                this.tableData.splice(index, 1);
+            },
+
+            post() {
+                // var that = this;
+                clock();
+                var int = self.setInterval("clock()", 2000);
+                var that = this;
+                const params = new URLSearchParams();
+
+
+                params.append('db', db);
+                axios.post(
+                    'getMaterial', params, {
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                }
+                ).then(function (response) {
+                    root.material = JSON.parse(JSON.stringify(response.data.location)) //3.接收后端返回的参数
+                })
+                    .catch(function (err) { })
+
+            },
+            //控制单双行颜色
+            tableRowClassName({
+                row,
+                rowIndex
+            }) {
+                if ((rowIndex + 1) % 2 === 0) {
+                    return 'double';
+                } else {
+                    return 'single';
+                }
+            },
+            tim() {
+                var date = new Date(); //当前系统时间
+                var year = date.getFullYear();
+                var month = date.getMonth();
+                var de = date.getDate();
+                var hours = date.getHours();
+                var minutes = date.getMinutes();
+                minutes = minutes > 9 ? minutes : ('0' + minutes);
+                var seconds = date.getSeconds();
+                seconds = seconds > 9 ? seconds : ('0' + seconds);
+
+                return year + '-' + (month + 1) + '-' + de + '  ' + hours + ':' + minutes + ':' + seconds;
+
+            },
+            alerte(e) {
+                $("body").append('<div id="msg"><div id="msg_top">' + '叫料' + '<span class="msg_close">×</span></div><div id="msg_cont">' + e + '<br><span class="xinjia">' + this.time + '</span></div><div class="msg_que" id="msg_clear">确定</div></div>');
+                $(".msg_close").click(function () {
+                    $("#msg").remove();
+                });
+
+                $(".msg_que1").click(function () {
+                    $("#msg").remove();
+                });
+
+                $(".msg_que").click(function () {
+                    $("#msg").remove();
+
+                });
+            }
+        }
+    })
+
+</script>
+<script>
+    window.onload = function () {
+
+        root.post();
+
+    }
+    function changesite(val) {
+        if (val == 'E1') {
+            document.getElementById("material").disabled = "true";
+
+        } else {
+            document.getElementById("material").disabled = "";
+        }
+    }
+    /*实现叫料*/
+    function add() {
+
+        var material = document.getElementById('material');
+
+        if (material.value == '') {
+            alert('请选择物料')
+            return false
+        }
+        $('#filledit').show();
+    }
+
+    $('#delefill').click(function () {
+        $('#filledit').hide();
+    })
+
+    $('#editfill').click(function () {
+        $('#filledit').hide();
+        $('#loading').show();
+
+        var that = this
+        var time = root.tim();
+
+        var mytab = document.getElementById("ptab");
+        //获取用户信息
+        var no = mytab.rows.length;
+
+        var site = document.getElementById('siteID').innerHTML;
+
+        var clientn = localStorage.getItem("clientid");
+
+
+        const params = new URLSearchParams();
+        params.append('db', db);
+        params.append('direction', 'C1');
+        params.append('name', material.value);
+        params.append('userid', document.cookie.split("=")[1],);
+        params.append('time', time);
+
+        axios.post(
+            'exchange', params, {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        }
+        )
+            .then(function (response) {
+                $('#loading').hide();
+                if (response.data === "on") {
+                    console.log(response.data)
+                    root.alerte("当前任务无法生成")
+                } else if (response.data == "get") {
+                    console.log(response.data)
+                    root.alerte("没有放空箱的地方")
+                } else if (response.data == "put") {
+                    console.log(response.data)
+                    root.alerte("暂时没有该物料")
+                } else if (response.data == "ok") {
+
+                }
+            })
+            .catch(function (err) { alert("请求失败") })
+    })
+
+    function del(obj) {
+
+
+        var mytab = document.getElementById("ptab");
+        console.log("412");
+        const params = new URLSearchParams();
+        params.append('name', obj.parentNode.parentNode.cells[2].innerText);
+        params.append('db', db);
+        params.append('type', "wl");
+        axios.post(
+            'del', params, {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        }
+
+        )
+            .then(function (response) {
+                var res = response.data;
+
+            })
+            .catch(function (err) { })
+        obj.parentNode.parentNode.remove();
+        for (var i = 1; i <= mytab.rows.length; i++)
+            mytab.rows[i].cells[0].innerHTML = i;
+
+
+    }
+</script>
+
+</html>

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery.cookie.js"></script>
+    <link href="style/admin.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="style/index.css">
+    <script type="text/javascript" src="js/cookie.js"></script>
+    <meta materical="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="js/jquery.min.js"></script>
+    <link href="style/fit.css" rel="stylesheet" type="text/css" />
+    <link href="style/fitmobile.css" rel="stylesheet" type="text/css" />
+    <meta materical="viewport" content="width=device-width,maximum-scale=1.0,initial-scale=1,user-scalable=no">
+    <title>MOVER site T40</title>
+    <style>
+        .el-table::before {
+            left: 0;
+            bottom: -1px;
+            width: 100%;
+            height: 1px;
+        }
+
+        .el-table td.el-table__cell,
+        .el-table th.el-table__cell.is-leaf {
+            border: 1px solid black;
+        }
+
+        /*手机*/
+
+        @media screen and (max-width:600px) {
+
+            html,
+            body {
+                height: 100%;
+                overflow-y: hidden;
+            }
+
+            .login {
+                position: absolute;
+                top: 85px;
+                width: 775px;
+                left: 145px;
+                bottom: 0px;
+                background-color: #dcdddd;
+            }
+
+            div.search {
+                width: 960px;
+            }
+
+            body {
+                min-height: 904px;
+                min-width: 960px;
+                overflow: hidden;
+                height: 100%;
+                font-weight: 500;
+                font-family: "宋体", "Segoe UI", "Lucida Grande", Helvetica, Arial, sans-serif, FreeSans, Arimo;
+            }
+        }
+
+        .serch {
+            display: flex;
+        }
+
+        .keyword {
+            position: absolute;
+            right: -100px;
+        }
+
+        svg.icon {
+            position: absolute;
+            top: 5px;
+            height: 30px;
+            width: 30px;
+            right: 110px;
+        }
+
+        .el-button {
+            border: 2px solid black !important;
+            padding: 5px 10px !important;
+        }
+
+        .el-input__inner {
+            width: 293px !important;
+            padding-right: 40px !important;
+        }
+
+        .el-icon-circle-close.el-input__clear {
+            font-size: 12px;
+        }
+
+        #person-list {
+            width: 90%;
+            margin-left: 5%;
+            margin-right: 5%;
+            font-size: 15px;
+            margin-top: 1%;
+        }
+    </style>
+</head>
+
+<body class="bod">
+    <div class="search bar3">
+        <div class="imglo">
+        </div>
+        <div>
+            <a href="Susetup.html" style="background-image: url(image/set.png);" class="herder-left">补料</a>
+        </div>
+
+        <div><a href="Sulog.html" style="background-image: url(image/Wsite2.png);" class="herder-left">补料日志</a>
+        </div>
+        <div class="opuser herder-left">
+            超市用户
+        </div>
+        <div class="verticalw"><a style="background-image: url(image/shutdown_w.png); width: 130px;" class="herder-left"
+                onclick="removeCookies('userid')">安全退出</a> </div>
+
+
+    </div>
+
+
+    <div>
+        <div class="leftbox">
+            <div class="ltopbox">任务日志</div>
+
+        </div>
+
+
+        <div class="login lleftbox">
+            <div class="timu">
+                <div class="wtitle">任务日志</div>
+                <div class="jiantou"></div>
+            </div>
+
+            <div class="container" id="root">
+                <div class="serch">
+                    <div class="time_rili">
+                        <input type="date" name="" id="rili3" v-model="searchValuee">
+                    </div>
+                    <div><button type="button" class="searchlog" @click="doFiltere"><img src="image/w3.png" alt=""
+                                style="margin-top: -7px;"></button></div>
+                    <div class="keyword">
+                        <el-input v-model="searchValue" type='search' clearable placeholder="请输入关键字"
+                            style="width:400px">
+                        </el-input>
+                        <label for="svg" @click="doFilter()">
+                            <svg t="1653482794231" id='svg' class="icon" viewBox="0 0 1024 1024" version="1.1"
+                                xmlns="http://www.w3.org/2000/svg" p-id="2340" width="16" height="16">
+                                <path
+                                    d="M446.112323 177.545051c137.567677 0.219798 252.612525 104.59798 266.162424 241.493333 13.562828 136.895354-78.778182 261.818182-213.617777 289.008485-134.852525 27.203232-268.386263-52.156768-308.945455-183.608889s25.018182-272.252121 151.738182-325.779394A267.235556 267.235556 0 0 1 446.112323 177.545051m0-62.060607c-182.794343 0-330.989899 148.195556-330.989899 330.989899s148.195556 330.989899 330.989899 330.989899 330.989899-148.195556 330.989899-330.989899-148.195556-330.989899-330.989899-330.989899z m431.321212 793.341415a30.849293 30.849293 0 0 1-21.94101-9.102223l-157.220202-157.220202c-11.752727-12.179394-11.584646-31.534545 0.37495-43.50707 11.972525-11.972525 31.327677-12.140606 43.494141-0.37495l157.220202 157.220202a31.036768 31.036768 0 0 1 6.723232 33.810101 31.004444 31.004444 0 0 1-28.651313 19.174142z m0 0"
+                                    p-id="2341" fill="#ffffff"></path>
+                            </svg>
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="tabcontainer">
+
+                    <div>
+                        <table>
+                            <tr>
+                                <td>
+                                    序号
+                                </td>
+                                <td>
+                                    账号
+                                </td>
+                                <td>
+                                    库位
+                                </td>
+                                <td>
+                                    物料
+                                </td>
+                                <td>
+                                    数量
+                                </td>
+                                <td>
+                                    补料时间
+                                </td>
+                            </tr>
+                            <tr v-for="(item,index) in resData">
+                                <td>{{index+1}}</td>
+                                <td>{{item.username}}</td>
+                                <td>{{item.shelves_name}}</td>
+                                <td>{{item.sort}}</td>
+                                <td>{{item.amount}}</td>
+                                <td>{{item.option_time}}</td>
+
+
+                            </tr>
+
+                        </table>
+
+
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script src="js/vue.js"></script>
+<script src="js/axios.min.js"></script>
+<script src="js/index.js"></script>
+
+
+<script>
+    var root = new Vue({
+        el: '#root',
+        data: {
+            resData: [
+
+            ],
+            searchValue: "",
+            searchValuee: "",
+            tableData: [],
+            currentPage: 1,
+            rili: '',
+            pageSize: 10,
+            totalItems: 0,
+            filterTableData: [],
+            flag: false,
+
+        },
+        created() {
+            var that = this;
+            axios.post("/market/feed_log", {
+                post: 1 //2.1需要给后端传的参数,发送请求
+
+            }, {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+                .then(function (response) {
+
+                    that.resData = response.data.data;
+
+                })
+                .catch(function (err) { })
+
+        },
+        mounted() {
+            setTimeout(() => {
+                this.mockRequset()
+            }, 1000);
+
+        },
+
+
+
+
+        methods: {
+
+
+            //控制单双行颜色
+            tableRowClassName({
+                row,
+                rowIndex
+            }) {
+                if ((rowIndex + 1) % 2 === 0) {
+                    return 'double';
+                } else {
+                    return 'single';
+                }
+            },
+            //控制 表头颜色
+            getRowClass({
+                rowIndex
+            }) {
+                if (rowIndex == 0) {
+                    return 'background:#ebeaef'
+                } else {
+                    return ''
+                }
+
+            },
+            mockRequset() {
+                console.log(this.resData)
+                this.totalItems = this.resData.length; // 注意： 这里mock数据是写在data里的，请求需考虑异步的情况
+                if (this.totalItems > this.pageSize) {
+                    for (let index = 0; index < this.pageSize; index++) {
+                        this.tableData.push(this.resData[index]);
+                    }
+                } else {
+                    this.tableData = this.resData;
+                }
+            },
+            // 前端搜索功能需要区分是否检索,因为对应的字段的索引不同
+            doFilter() {
+                this.tableData = [];
+                this.filterTableData = [];
+                this.resData.filter((item) => {
+                    // if ('uesrname' in item || 'opera' in item || 'address' in item || 'stime' in item) {
+                    // 按编号或地区查询 注意：根据实际数据 灵活调整字母大小写
+                    if (item.direction.includes(this.searchValue) ||
+                        item.userid.includes(this.searchValue) ||
+                        item.material.includes(this.searchValue) ||
+                        item.timeB.split(" ")[0].includes(this.searchValue)) {
+                        this.filterTableData.push(item);
+                    }
+
+                })
+                // 页面数据改变重新统计数据数量和当前页
+                this.currentPage = 1;
+                this.totalItems = this.filterTableData.length;
+                // 渲染表格,根据值
+                this.currentChangePage(this.filterTableData);
+                // 页面初始化数据需要判断是否检索过
+                this.flag = true;
+            },
+            doFiltere() {
+
+
+                let strArray = this.searchValuee.split("-");
+                strArray = strArray.map(function (val) {
+                    if (val[0] == "0") {
+                        return (val = val.slice(1));
+                    } else {
+                        return val;
+                    }
+                });
+
+
+                console.log(strArray.join("-"))
+                this.tableData = [];
+                this.filterTableData = [];
+                this.resData.filter((item) => {
+                    if (item.timeB.split(" ")[0].includes(strArray.join("-"))) {
+                        this.filterTableData.push(item);
+                    }
+                })
+                // 页面数据改变重新统计数据数量和当前页
+                this.currentPage = 1;
+                this.totalItems = this.filterTableData.length;
+                // 渲染表格,根据值
+                this.currentChangePage(this.filterTableData);
+                // 页面初始化数据需要判断是否检索过
+                this.flag = true;
+            },
+            // 每页显示条数改变触发
+            handleSizeChange(val) {
+                console.log(`每页 ${val} 条`);
+                this.pageSize = val;
+                this.handleCurrentChange(1);
+            },
+            // 当前页改变触发
+            handleCurrentChange(val) {
+                console.log(`当前页: ${val}`);
+                this.currentPage = val;
+                // 判断是否为搜索的数据,传入对应值
+                if (!this.flag) {
+                    this.currentChangePage(this.resData);
+                } else {
+                    this.currentChangePage(this.filterTableData);
+                }
+            },
+            // 根据分页，确定当前显示的数据
+            currentChangePage(list) {
+                let fromNum = (this.currentPage - 1) * this.pageSize;
+                let toNum = this.currentPage * this.pageSize;
+                this.tableData = [];
+                for (; fromNum < toNum; fromNum++) {
+                    if (list[fromNum]) {
+                        this.tableData.push(list[fromNum]);
+                    }
+                }
+            },
+        },
+
+
+    })
+</script>
+
+</html>

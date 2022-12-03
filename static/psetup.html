@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
+    <link href="style/admin.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="js/cookie.js"></script>
+    <link href="style/fit.css" rel="stylesheet" type="text/css" />
+    <link href="style/fitmobile.css" rel="stylesheet" type="text/css" />
+    <meta name="viewport" content="width=device-width,maximum-scale=1.0,initial-scale=1,user-scalable=no">
+    <title>MOVER site T40</title>
+</head>
+
+<body class="bod">
+    <div class="search">
+        <div class="imglo">
+        </div>
+
+        <div><a href="workspace.html" style="background-image: url(image/set.png);" class="herder-left">工作空间</a>
+        </div>
+        <div>
+            <ul id="list">
+                <li>
+                    <a href="#javascript" style="background-image: url(image/mission.png);" class="herder-left">用户信息</a>
+                    <ul>
+                        <li><a href="muser.html">用户管理</a></li>
+                        <li><a href="mulog.html">用户日志</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div class="opuser herder-left">
+            操作管理员
+        </div>
+        <div class="verticalw">
+            <a class="herder-left" style="width: 130px; background-image: url(image/shutdown_w.png);"
+                onclick="removeCookies('userid')">安全退出</a>
+        </div>
+    </div>
+
+
+    <div class="wname">
+        <div class="leftbox">
+            <div class="ltopbox">工作空间{{workspace_name}}</div>
+            <ul>
+
+                <li> <a href="findspace.html">查看</a></li>
+                <li> <a href="#" style="background-color: #f1f1f1;color: #5cb4e3;" class="xinxi">物料设置</a></li>
+            </ul>
+        </div>
+
+        <div class="login">
+            <div class="timu">
+                <div class="wtitle">工作空间{{workspace_name}}</div>
+                <div class="jiantou"></div>
+                <div class="wtitle">物料设置</div>
+                <div class="jiantou"></div>
+            </div>
+
+            <div class="container" id="app">
+                <div>
+                    <input type="text" name="" class="butto1" id="pname" placeholder="请输入物料名称">
+                    <input type="button" class="butto4" onclick="add()" value="+添加">
+                </div>
+                <div class="tabcontainer">
+                    <table id="ptab">
+                        <tr>
+                            <th>id</th>
+                            <th>物料名称</th>
+                            <th>操作</th>
+                        </tr>
+                        <tr v-for="(item,index) in material">
+                            <td>{{index+1}}</td>
+                            <td>{{item.name}}</td>
+                            <td><a href='#' class='buinp' @click="del(item.id)">删除</a>"</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="js/vue.js"></script>
+    <script src="js/axios.min.js"></script>
+
+    <script>
+        var db = localStorage.getItem("b");
+        var pse = new Vue({
+            el: '.wname',
+            data: {
+                workspace_name: '',
+                material: [],
+            },
+            mounted() {
+                this.workspace_name = db;
+            },
+            methods: {
+                del(id) {
+                    const params = new URLSearchParams();
+                    params.append('id', id);
+
+                    axios.post(
+                        '/admin/materialdel', params, {
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        }
+                    }
+
+                    )
+                        .then(function (response) {
+
+                            if (response.data.code === "0") {
+                                post();
+                            }
+
+
+                        })
+                        .catch(function (err) { console.log("请求失败"); })
+                },
+
+            }
+        })
+    </script>
+
+    <script type="text/javascript">
+
+        window.onload = function () {
+
+            post();
+
+        }
+        function post() {
+            axios.post(
+                '/admin/materialshow', {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            }
+            )
+                .then(function (response) {
+
+                    pse.material = response.data.data;
+
+                })
+                .catch(function (err) { });
+
+        }
+    </script>
+
+    <script>
+        /*添加工作空间*/
+        function add() {
+            var mytab = document.getElementById("ptab");
+            //获取用户信息
+            var no = mytab.rows.length;
+            var pname = document.getElementById("pname").value;
+
+
+            /*在表格中添加工作空间信息*/
+
+            //插入表格
+            var tabRow;
+
+            for (var i = 1; i < no; i++) {
+                var num = mytab.rows[i].cells[1].innerText;
+
+                //如果当前的表单中工作空间名称和输入的工作空间名称有重复提示用户，并返回不添加
+                if (num == pname) {
+                    alert("物料已存在");
+                    return false;
+                }
+            }
+
+            if (pname === '') {
+                alert('信息不能为空');
+            } else {
+                
+                const params = new URLSearchParams();
+                params.append('name', pname);
+                params.append('minimum', 0);
+
+                axios.post(
+                    '/admin/materialadd', params, {
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                }
+                )
+                    .then(function (response) {
+
+                        if (response.data.code === "0") {
+                            post();
+                        }
+                    })
+                    .catch(function (err) { })
+            }
+
+        }
+    </script>
+</body>
+
+</html>

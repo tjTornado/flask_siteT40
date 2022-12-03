@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery.cookie.js"></script>
+    <link href="style/admin.css" rel="stylesheet" type="text/css" />
+    <meta name="viewport" content="width=device-width,maximum-scale=1.0,initial-scale=1,user-scalable=no">
+    <link href="style/fit.css" rel="stylesheet" type="text/css" />
+    <link href="style/fitmobile.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="js/cookie.js"></script>
+    <title>MOVER site T40</title>
+</head>
+
+<body>
+    <div class="search bar3">
+        <div class="imglo">
+        </div>
+        <div><a href="Susetup.html" style="background-image: url(image/Wsite2.png);" class="herder-left">补料</a>
+        </div>
+        <div><a href="Sulog.html" style="background-image: url(image/Wsite2.png);" class="herder-left">补料日志</a>
+        </div>
+        <div class="opuser herder-left">
+            超市用户
+        </div>
+        <div class="verticalw"><a style="background-image: url(image/shutdown_w.png); width: 130px;" class="herder-left"
+                onclick="removeCookies('userid')">安全退出</a> </div>
+
+
+    </div>
+
+    <div class="wname">
+        <div class="login logina">
+            <div class="timu">
+                <div class="wtitle">补料</div>
+                <div class="jiantou"></div>
+
+            </div>
+            <div class="container" id="admin">
+                <div id="divhe">
+
+                    <div id="fediv" style="overflow: scroll;">
+                        <h2 style="margin-left: 45%;">{{workspace_name}}-T40库位</h2>
+                        <div id="fedive">
+                            <table class="abc">
+                                <tr style="height: 70px;">
+                                    <th></th>
+                                    <th>第1列</th>
+                                    <th>第2列 </th>
+                                    <th>第3列</th>
+                                    <th>第4列</th>
+                                    <th>第5列</th>
+                                    <th>第6列</th>
+                                </tr>
+                                <tr v-for="index of 5" :key="index">
+
+                                    <td class="layer">
+                                        <p>第{{6-index}}层</p>
+                                        <p>（物料）</p>
+                                    </td>
+
+                                    <td :id="lo[(index-1)*6+index2-1]" v-for="index2 of 6" :key="index2"
+                                        @click="addma(index,index2)">
+                                        <h2>{{lo[(index-1)*6+index2-1]}}</h2>
+                                        <img :src="img(index,index2)" alt="">
+                                        <p v-html="ptext(index,index2)"></p>
+                                    </td>
+
+                                </tr>
+
+
+
+                            </table>
+
+                            <div>
+                                <ul class="allshow">
+                                    <li class="catecolorp legend" id="12">
+                                        <label>无货</label>
+                                    <li class="catecolorl legend">
+                                        <label>有货</label>
+                                    </li>
+
+
+                                </ul>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="tablecon">
+                        <input type="button" class="adda" @click="setup()" value="报警设置">
+
+                        <table border="1" height="300px" class="tablespace">
+                            <thead class="mate">
+                                <td style="font-size: 20px;font-weight: 800;">物料种类</td>
+                                <td style="font-size: 20px;font-weight: 800;">物料数量</td>
+                                <td style="font-size: 20px;font-weight: 800;">报警数量</td>
+                            </thead>
+                            <tr v-for="item in all_thing" :class="color(item.number,item.minimum)" class="mate">
+                                <td>{{item.name}}</td>
+                                <td>{{item.number}}</td>
+                                <td>{{item.minimum}}</td>
+                            </tr>
+                        </table>
+
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="overlay" style="display: none;" id="filla">
+            <div class="con">
+                <h2 class="title" id="mhead">报警设置</h2>
+                <div class="content">
+                    <p><img src="image/w1.png" alt=""><span style="font-family: 微软雅黑;">&nbsp;&nbsp;&nbsp;</span>物料:</p>
+                    <select name='' class='addws' id="aname">
+                        <option value="">选择物料</option>
+                        <option v-for="item in all_thing" v-bind:value="item.name" v-text="item.name"></option>
+                    </select>
+                    <p><img src="image/w1.png" alt=""><span style="font-family: 微软雅黑;">&nbsp;&nbsp;&nbsp;</span>最低数量:
+                    </p>
+                    <input type="text" name="anum" class="addws" id="anum" autocomplete="off">
+                    <p>
+                        <button @click="changeA" value="取消">取消</button>
+                        <button @click="modifyA" value="确定">确定</button>
+
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="overlay" style="display: none;" id="fill">
+            <div class="con">
+                <h2 class="title" id="mhead">{{title}}</h2>
+                <div class="content">
+                    <p><img src="image/w1.png" alt=""><span style="font-family: 微软雅黑;">&nbsp;&nbsp;&nbsp;</span>物料:</p>
+                    <select name='' class='addws' id="maname">
+                        <option value="">选择物料</option>
+                        <option v-for="item in all_thing" v-bind:value="item.name" v-text="item.name"></option>
+                    </select>
+                    <p><img src="image/w1.png" alt=""><span style="font-family: 微软雅黑;">&nbsp;&nbsp;&nbsp;</span>数量:</p>
+                    <input type="text" name="num" class="addws" id="num" autocomplete="off">
+                    <p>
+                        <button @click="changeActive" value="取消">取消</button>
+                        <button @click="modify" value="确定">确定</button>
+
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script type="text/javascript" src="js/vue.js"></script>
+    <script src="js/axios.min.js"></script>
+
+    <script>
+        var admin = new Vue({
+            el: '.wname',
+            data: {
+                workspace_name: '',
+                all_thing: [],
+                all_site: [],
+                threshold: 3,
+                modifyName: "",
+                title: "",
+                row: 8,
+                col: 8,
+                layer5: '',
+                layer4: '',
+                layer3: '',
+                layer2: '',
+                layer1: '',
+                lay5: [{ "ID": "A15", "mat": '螺丝', 'count': 2 }, { "ID": "A25", "mat": '螺丝', 'count': 2 }, { "ID": "B35", "mat": '扳手', 'count': 2 }, { "ID": "B45", "mat": '无', 'count': 0 }, { "ID": "C55", "mat": '无', 'count': 0 }, { "ID": "C65", "mat": '无', 'count': 0 }],
+                lay4: [{ "ID": "A14", "mat": '无', 'count': 0 }, { "ID": "A24", "mat": '无', 'count': 0 }, { "ID": "B34", "mat": '扳手', 'count': 2 }, { "ID": "B44", "mat": '无', 'count': 0 }, { "ID": "C54", "mat": '无', 'count': 0 }, { "ID": "C64", "mat": '无', 'count': 0 }],
+                lay3: [{ "ID": "A13", "mat": '扳手', 'count': 1 }, { "ID": "A23", "mat": '螺丝', 'count': 2 }, { "ID": "B33", "mat": '扳手', 'count': 2 }, { "ID": "B43", "mat": '无', 'count': 0 }, { "ID": "C53", "mat": '无', 'count': 0 }, { "ID": "C63", "mat": '无', 'count': 0 }],
+                lay2: [{ "ID": "A12", "mat": '螺丝', 'count': 2 }, { "ID": "A22", "mat": '螺丝', 'count': 2 }, { "ID": "B32", "mat": '无', 'count': 0 }, { "ID": "B42", "mat": '无', 'count': 0 }, { "ID": "C52", "mat": '无', 'count': 0 }, { "ID": "C62", "mat": '无', 'count': 0 }],
+                lay1: [{ "ID": "A11", "mat": '无', 'count': 0 }, { "ID": "A21", "mat": '无', 'count': 0 }, { "ID": "B31", "mat": '无', 'count': 0 }, { "ID": "B41", "mat": '无', 'count': 0 }, { "ID": "C51", "mat": '无', 'count': 0 }, { "ID": "C61", "mat": '无', 'count': 0 }],
+                lo: ["A15", "A25", "B35", "B45", "C55", "C65", "A14", "A24", "B34", "B44", "C54", "C64", "A13", "A23", "B33", "B43", "C53", "C63", "A12", "A22", "B32", "B42", "C52", "C62", "A11", "A21", "B31", "B41", "C51", "C61"],
+                index: 8,
+            },
+            created() {
+                var that = this;
+
+
+                axios.get(
+                    "getWork",
+                )
+                    .then(function (response) {
+
+                        that.workspace_name = (response.data.work[0].name);
+                        console.log(that.workspace_name) //3.接收后端返回的参数
+
+                    })
+                    .catch(function (err) { })
+
+
+            },
+            mounted() {
+
+                setInterval(() => {
+                    setTimeout(() => {
+                        var that = this
+                        const params = new URLSearchParams();
+                        params.append('db', admin.workspace_name);
+                        // console.log(2, that.workspace_name)
+                        axios.post('find', params, //获取位置
+                            {
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded'
+                                }
+                            })
+                            .then(function (response) {
+                               
+                            })
+                            .catch(function (err) { })
+                        window.location.reload();
+                    }, 300);
+
+                }, 1000 * 60 * 2);
+
+            },
+            methods: {
+                img(index, index2) {
+
+                    if (this.all_site[(index - 1) * 6 + index2 - 1].amount > 0) {
+
+                        return "image/2.png";
+                    }
+                    else {
+                        return "image/1.png";
+                    }
+                },
+                ptext(index, index2) {
+                    return this.all_site[(index - 1) * 6 + index2 - 1].sort + "," + this.all_site[(index - 1) * 6 + index2 - 1].amount;
+                },
+                addma(index, index2) {
+                    console.log(this.lo[(index - 1) * 6 + index2 - 1]);
+                    this.title = this.lo[(index - 1) * 6 + index2 - 1] + "物料设置";
+                    this.modifyName = this.all_site[(index - 1) * 6 + index2 - 1].name;
+                    $('#fill').show();
+
+
+                },
+                color(index,index1) {
+
+                    if (index < index1) {
+                        return "colorred";
+                    } else {
+                        return "";
+                    }
+
+                },
+                modify() {
+                    var name = $('#maname').val();
+                    var count = $('#num').val();
+
+                    if (name === '' || count === '') {
+                        alert("请检查信息是否填写完整")
+                        return false
+                    }
+                    if (count != 1 && count != 2) {
+                        alert("输入的数值不合法，请重新输入！")
+                        return false
+                    }
+                    var data = [{
+                        'sort': name,
+                        'amount': count,
+                        'name': this.modifyName
+                    }];
+                    
+
+                    var data2 = new URLSearchParams();
+                    data2.append("data", JSON.stringify(data));
+
+                    axios.post('/market/shelvesadd', data2, //获取位置
+                        {
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            }
+                        })
+                        .then(function (response) {
+
+                            if (response.data.code === "0") {
+                                all_thing();
+                            }
+                        })
+                        .catch(function (err) { })
+
+                    $('#fill').hide();
+
+                },
+                modifyA() {
+                    var name = $('#aname').val();
+                    var count = $('#anum').val();
+                    if (name === '' || count === '') {
+                        alert("请检查信息是否填写完整")
+                        return false
+                    }
+
+                    if (Math.floor(count) != count) {
+                        alert("请输入整数！")
+                        return false
+                    }
+                    var idx = 0;
+                    var idx2 = 0;
+                    for (var i = 0; i < this.all_thing.length; i++) {
+                        if (name == this.all_thing[i].name) {
+                            idx = this.all_thing[i].id;
+                            idx2 = i;
+                            break;
+                        }
+
+                    }
+                    that = this;
+
+                    const params = new URLSearchParams();
+                    params.append('minimum', count);
+                    params.append('id', idx);
+
+                    axios.post('/market/materialmodify', params, //获取位置
+                        {
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            }
+                        })
+                        .then(function (response) {
+
+
+                            console.log(response.data);
+                            if (response.data.code === "0") {
+                                
+                                that.all_thing[idx2].minimum = count;
+                            }
+                        })
+                        .catch(function (err) { })
+
+                    $('#filla').hide();
+
+                },
+                changeActive() {
+                    $('#fill').hide();
+                },
+                changeA() {
+                    $('#filla').hide();
+                },
+
+
+                setup() {
+                    $('#filla').show();
+
+                }
+
+            }
+        })
+    </script>
+    <script>
+        window.onload = function () {
+
+            // post();
+            all_thing();
+            $(".la5").click(function () {
+                $('#fill').show();
+
+            })
+
+        }
+
+        $('#delefill').click(function () {
+            $('#filledit').hide();
+        })
+
+        $('#editfill').click(function () {
+            $('#filledit').hide();
+
+        })
+
+        //获取物料信息
+        function all_thing() {
+
+
+            axios.post('/market/shelvesshow', //获取位置
+                {
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                })
+                .then(function (response) {
+
+                    admin.all_site = response.data.data;
+                    admin.all_thing = response.data.all;
+                })
+                .catch(function (err) { })
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery.cookie.js"></script>
+    <link href="style/admin.css" rel="stylesheet" type="text/css" />
+    <meta name="viewport" content="width=device-width,maximum-scale=1.0,initial-scale=1,user-scalable=no">
+    <link href="style/fit.css" rel="stylesheet" type="text/css" />
+    <link href="style/fitmobile.css" rel="stylesheet" type="text/css" />
+    <title>工作空间查看</title>
+    <style>
+        .edivtext {
+            text-align: center;
+            line-height: 55px;
+        }
+
+        .text {
+            text-align: center;
+        }
+
+        #fedive {
+            top: 0px;
+            position: relative;
+            background-color: #e9e9e9;
+            width: 100%;
+            height: 90%;
+            padding-top: 20px;
+        }
+    </style>
+
+</head>
+
+<body class="bod">
+    <div class="search">
+        <div class="imglo">
+        </div>
+
+        <div><a href="workspace.html" style="background-image: url(image/set.png);" class="herder-left">工作空间</a>
+        </div>
+        <div>
+            <ul id="list">
+                <li>
+                    <a href="#javascript" style="background-image: url(image/mission.png);" class="herder-left">用户信息</a>
+                    <ul>
+                        <li><a href="muser.html">用户管理</a></li>
+                        <li><a href="mulog.html">用户日志</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div class="opuser herder-left">
+            操作管理员
+        </div>
+
+        <div class="verticalw">
+            <a class="herder-left" style="width: 130px; background-image: url(image/shutdown_w.png);"
+                onclick="removeCookies('userid')">安全退出</a>
+        </div>
+    </div>
+
+    <div class="wname">
+        <div class="leftbox">
+            <div class="ltopbox">工作空间{{workspace_name}}</div>
+            <ul>
+                <li><a id="a" href="#" style="background-color: #f1f1f1;color: #5cb4e3; padding: 10px 50px;"
+                        class="dropbtn">查看</a></li>
+                <li> <a href="lsetup.html" class="xinxi">库位设置</a></li>
+                <li> <a href="psetup.html" class="xinxi">物料设置</a></li>
+            </ul>
+        </div>
+
+        <div class="login">
+            <div class="timu">
+                <div class="wtitle">工作空间{{workspace_name}}</div>
+                <div class="jiantou"></div>
+                <div class="wtitle">查看</div>
+                <div class="jiantou"></div>
+
+            </div>
+            <div class="container" id="admin">
+                <div id="divhe">
+                    <div id="fediv" style="overflow: scroll;">
+                        <h2 style="margin-left: 45%;">{{workspace_name}}-T40库位</h2>
+                        <div id="fedive">
+
+                            <div>
+                                <ul class="allshow">
+                                    <li><span class="catecolorp">
+                                            <label>数量为2</label>
+                                        </span></li>
+                                    <li><span class="catecolorl">
+                                            <label>数量为1</label>
+                                        </span></li>
+                                    <li><span class="catecolor">
+                                            <label>空库位</label>
+                                        </span></li>
+
+
+                                </ul>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="tablecon">
+
+                        <table border="1" height="300px" class="tablespace">
+                            <thead>
+                                <td style="font-size: 20px;font-weight: 800;">物料种类</td>
+                            </thead>
+                            <tr v-for="item in all_thing">
+                                <td>{{item.name}}</td>
+                            </tr>
+                        </table>
+
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    </div>
+
+
+    <script type="text/javascript" src="js/vue.js"></script>
+    <script src="js/axios.min.js"></script>
+
+    <script>
+        var admin = new Vue({
+            el: '.wname',
+            data: {
+                workspace_name: '',
+                all_thing: [],
+
+            },
+            created() {
+                var that = this;
+
+                axios.get(
+                    "getWork",
+                )
+                    .then(function (response) {
+
+                        that.workspace_name = (response.data.work[0].name);
+                        console.log(that.workspace_name) //3.接收后端返回的参数
+
+                    })
+                    .catch(function (err) { })
+
+
+            },
+            mounted() {
+                setInterval(() => {
+                    setTimeout(() => {
+                        var that = this
+                        const params = new URLSearchParams();
+                        params.append('db', admin.workspace_name);
+                        console.log(2, that.workspace_name)
+                        axios.post('find', params, //获取位置
+                            {
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded'
+                                }
+                            })
+                            .then(function (response) {
+                                if (JSON.stringify(response.data) === '{}') {
+
+                                    return;
+                                }
+                                that.position = response.data.position
+                                for (var i = 0; i < admin.position.length; i++) {
+                                    con.getElementsByClassName('ediv')[i].style.top = admin.position[i].top + "px";
+                                    con.getElementsByClassName('ediv')[i].style.left = admin.position[i].left + "px";
+
+                                    console.log(admin.position[i].count)
+                                    if (admin.position[i].count === '2') {
+                                        console.log("zc", admin.position[i].contain)
+                                        con.getElementsByClassName('ediv')[i].classList.add('colorp')
+                                        con.getElementsByClassName('ediv')[i].innerHTML = admin.position[i].name + '<br>' + admin.position[i].contain + ',' + admin.position[i].count;
+                                    } else if (admin.position[i].count === '1') {
+                                        console.log("cz", admin.position[i].state)
+                                        con.getElementsByClassName('ediv')[i].classList.add('colorl')
+                                        con.getElementsByClassName('ediv')[i].innerHTML = admin.position[i].name + '<br>' + admin.position[i].contain + ',' + admin.position[i].count;
+                                    } else {
+                                        con.getElementsByClassName('ediv')[i].classList.add('color')
+                                        con.getElementsByClassName('ediv')[i].classList.remove('text')
+                                        con.getElementsByClassName('ediv')[i].classList.add('edivtext')
+                                        con.getElementsByClassName('ediv')[i].innerHTML = admin.position[i].name
+                                    }
+                                }
+                            })
+                            .catch(function (err) { })
+                        window.location.reload();
+                    }, 300);
+
+                }, 1000 * 60 * 2);
+
+            },
+            methods: {
+
+            }
+        })
+    </script>
+    <script>
+        window.onload = function () {
+            post();
+            all_thing();
+
+        }
+
+        function post() {
+
+            const params = new URLSearchParams();
+            params.append('db', admin.workspace_name,);
+            axios.post('/find', params, //获取位置
+                {
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                })
+                .then(function (response) {
+                    admin.position = response.data.position;
+                    for (var i = 0; i < admin.position.length; i++) {
+                        var div = document.createElement("div"); //创建一个标签
+                        div.className = "ediv edivtext"; //给创建的div设置class；
+                        var con = document.getElementById('fedive'); //获取标签
+                        con.appendChild(div); //向刚获取的标签中添加创建的标签
+                    }
+
+                    show(admin.position);
+
+                    function show(pos) {
+
+
+                        var posx = [];
+                        var posy = [];
+
+                        for (var i = 0; i < pos.length; i++) {
+                            posx[i] = parseFloat(pos[i].left);
+                            posy[i] = parseFloat(pos[i].top);
+                            n++;
+                        }
+
+                        var rankx = [];
+                        rankx[0] = posx[0];
+                        for (var i = 1; i < posx.length; i++) {
+                            var flag = true;
+                            for (var j = 0; j < rankx.length; j++) {
+
+                                if (Math.abs(posx[i] - rankx[j]).toFixed(2) <= 0.1) {
+                                    flag = false;
+                                    break;
+                                }
+                            }
+                            if (flag === true) {
+                                rankx[rankx.length] = posx[i];
+                            }
+                        }
+                        var ranky = [];
+                        ranky[0] = posy[0];
+                        for (var i = 1; i < posy.length; i++) {
+                            var flag = true;
+                            for (var j = 0; j < ranky.length; j++) {
+
+
+                                if (Math.abs(posy[i] - ranky[j]).toFixed(2) <= 0.1) {
+                                    flag = false;
+                                    break;
+                                }
+                            }
+                            if (flag === true) {
+                                ranky[ranky.length] = posy[i];
+                            }
+                        }
+
+                        var col = rankx.length;
+                        var raw = ranky.length;
+
+
+                        var widtx = 0.6 / col; //每个库位的宽度，总共占面积的50%
+                        var heitx = 0.6 / raw;
+                        // console.log(widtx);
+                        var sortx = rankx.sort();
+                        var sum = 0;
+                        for (var i = 1; i < sortx.length; i++) {
+                            sum += Math.abs(sortx[i] - sortx[i - 1]);
+
+                        }
+                        var rat = [];
+                        for (var i = 0; i < sortx.length - 1; i++) {
+
+                            rat[i] = parseFloat((Math.abs(sortx[i + 1] - sortx[i]) / sum).toFixed(2));
+                        }
+                        // console.log("rat:",rat);
+
+                        var con = document.getElementById('fedive'); //获取标签
+                        // console.log("241");
+
+                        var n = 0;
+
+                        for (var i = 0; i < pos.length; i++) {
+                            var xleft = 0;
+                            for (var l = 0; l < sortx.length; l++) {
+                                if (Math.abs((pos[i].left - sortx[l]).toFixed(2)) <= 0.1) {
+                                    if (l == 0) {
+                                        xleft = 0.1;
+                                    } else {
+                                        var sums = 0;
+                                        for (var m = 0; m < l; m++) {
+                                            sums = sums + rat[m];
+
+                                        }
+                                        // console.log(widtx * l);
+                                        xleft = parseFloat((0.1 + widtx * l + sums * 0.2).toFixed(2));
+                                    }
+                                }
+
+                            }
+                            if (i % 2 == 0) {
+                                con.getElementsByClassName('ediv')[i].style.top = parseFloat(pos[i].top) + 400 + "px";
+                            } else {
+                                con.getElementsByClassName('ediv')[i].style.top = parseFloat(pos[i].top) + 250 + "px";
+                            }
+
+                            con.getElementsByClassName('ediv')[i].style.left = xleft * 100 + "%";
+                            con.getElementsByClassName('ediv')[i].style.width = widtx * 100 + "%";
+
+                            if (admin.position[i].count === '2') {
+                                console.log("zc", admin.position[i].contain)
+                                con.getElementsByClassName('ediv')[i].classList.add('colorp')
+                                con.getElementsByClassName('ediv')[i].innerHTML = admin.position[i].name + '<br>' + admin.position[i].contain + ',' + admin.position[i].count;
+                            } else if (admin.position[i].count === '1') {
+                                console.log("cz", admin.position[i].state)
+                                con.getElementsByClassName('ediv')[i].classList.add('colorl')
+                                con.getElementsByClassName('ediv')[i].innerHTML = admin.position[i].name + '<br>' + admin.position[i].contain + ',' + admin.position[i].count;
+                            } else {
+                                con.getElementsByClassName('ediv')[i].classList.add('color')
+                                con.getElementsByClassName('ediv')[i].classList.remove('text')
+                                con.getElementsByClassName('ediv')[i].classList.add('edivtext')
+                                con.getElementsByClassName('ediv')[i].innerHTML = admin.position[i].name
+                            }
+
+                        }
+                    }
+
+                })
+                .catch(function (err) { })
+        }
+
+        function all_thing() {
+
+            const params = new URLSearchParams();
+            params.append('db', admin.workspace_name,);
+            axios.post('getMaterial', params, //获取位置
+                {
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                })
+                .then(function (response) {
+                    admin.all_thing = response.data.location
+
+                })
+                .catch(function (err) { })
+        }
+    </script>
+</body>
+
+</html>

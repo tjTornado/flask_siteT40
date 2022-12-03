@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery.cookie.js"></script>
+    <link href="style/workspace.css" rel="stylesheet" type="text/css" />
+    <link href="style/admin.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="js/cookie.js"></script>
+    <link href="style/fit.css" rel="stylesheet" type="text/css" />
+    <link href="style/fitmobile.css" rel="stylesheet" type="text/css" />
+    <meta name="viewport" content="width=device-width,maximum-scale=1.0,initial-scale=1,user-scalable=no">
+    <title>MOVER site T40</title>
+</head>
+
+<body>
+    <div class="search">
+        <div class="imglo">
+        </div>
+
+        <div><a href="workspace.html" style="background-image: url(image/set.png);" class="herder-left">工作空间</a>
+        </div>
+        <div>
+            <ul id="list">
+                <li>
+                    <a href="#javascript" style="background-image: url(image/mission.png);" class="herder-left">用户信息</a>
+                    <ul>
+                        <li><a href="muser.html">用户管理</a></li>
+                        <li><a href="mulog.html">用户日志</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div class="opuser herder-left">
+            操作管理员
+        </div>
+        <div class="verticalw">
+            <a class="herder-left" style="width: 130px; background-image: url(image/shutdown_w.png);"
+                onclick="removeCookies('userid')">安全退出</a>
+        </div>
+    </div>
+
+
+    <div>
+        <div class="leftbox">
+            <div class="ltopbox">工作空间</div>
+        </div>
+
+        <div class="login" id="mulog">
+
+            <div class="timu">
+                <div class="wtitle">工作空间</div>
+                <div class="jiantou"></div>
+
+            </div>
+
+
+            <div class="container" id="app">
+                <div class="butto">
+                    <input type="button" class="adduser" @click="add" value="+创建新的工作空间">
+                </div>
+
+                <div class="tabcontainer">
+                    <table>
+                        <tbody id="ntable">
+                            <tr>
+                                <th width="120px">id</th>
+                                <th class="unique" width="200px">工作空间名称</th>
+                                <th width="200px">交互对象</th>
+                                <th width="200px">IP</th>
+                                <th width="200px">机器人组</th>
+                                <th colspan="3">操作</th>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>t401</td>
+                                <td>调度系统</td>
+                                <td>127.0.0.1</td>
+                                <td>机器人组A</td>
+                                <td style="padding: 0px 30px;"><a href="javascript:;"
+                                        @click="showOverlaye(index)">修改</a> </td>
+                                
+                                <td style="padding: 0px 30px;"><a href='psetup.html' @click="use(index)">物料设置</a></td>
+                                <td style="padding: 0px 30px;"><a href='findspace.html' @click="use(index)">查看</a></td>
+
+                            </tr>
+                        </tbody>
+
+                    </table>
+
+                </div>
+                <model :list='selectedlist' :isactive="isActive" :robots="robots" :places="places" v-cloak
+                    @change="changeOverlay" @modify="modify">
+                </model>
+                <modele :list='selectedliste' :isactivee="isActivee" :robots="robots" :places="places" v-cloak
+                    @change="changeOverlaye" @modifye="modifye" :change_a='change_a'>
+                </modele>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="https://unpkg.com/vue@2.3.4/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script type="text/javascript">
+        Vue.component('modele', {
+            props: ['list', 'isactivee', 'robots', 'places', 'change_a'],
+            template: `<div class="overlaye" v-show="isactivee">
+                        <div class="cone">
+                            <h2 class="titlee">工作空间</h2>
+                            <div class="content">                              
+                                <p> <img src="image/w1.png" alt=""><span style="font-family: 微软雅黑;">&nbsp;&nbsp;&nbsp;</span>IP地址:</p>
+                                <input type="text"  class="addws" id='ip' v-model="modifyelist.ip" onBlur="txtblur(this)" autocomplete="off">                                           
+                                <p>
+                                    <button @click="changeActive" value="取消"  id='buto'>取消</button>
+                                    <button @click="modifye" value="确定" id='buto'>确定</button>
+                        
+                                </p>
+                        </div>
+                        </div>
+                    </div>`,
+            computed: {
+                modifyelist() {
+                    return this.list;
+                }
+            },
+            methods: {
+                changeActive() {
+                    this.$emit('change');
+                },
+                modifye() {
+                    this.$emit('modifye', this.modifyelist);
+                    console.log(this.modifyelist);
+                },
+
+            }
+        });
+        Vue.component('model', {
+            props: ['list', 'isactive', 'robots', 'places'],
+            template: `<div class="overlaye" v-show="isactive">
+                        <div class="cone">
+                            <h2 class="titlee">工作空间</h2>
+                            <div class="content">
+                                <p> <img src="image/w1.png" alt=""><span style="font-family: 微软雅黑;">&nbsp;&nbsp;&nbsp;</span>交互对象:</p>
+                                <select  class="addws" v-model="modifylist.jiaohu" @change='judge($event)' id='jiaohu'>
+                                    <option value="机器人">机器人</option>
+                                    <option value="调度系统">调度系统</option>
+                                </select>
+                                <p> <img src="image/w1.png" alt=""><span style="font-family: 微软雅黑;">&nbsp;&nbsp;&nbsp;</span>IP地址:</p>
+                                <input type="text"  class="addws" id='ip' v-model="modifylist.ip" onBlur="txtblur(this)" autocomplete="off">  
+                                <p id="sd"> <img src="image/w1.png" alt=""><span style="font-family: 微软雅黑;">&nbsp;&nbsp;&nbsp;</span>机器人组:</p>
+                                <select class="addws" v-model="modifylist.duixiang" id="sdd"  onBlur="getlocation(this)" autocomplete="off" >
+                                    <option v-for="item in robots" v-bind:value="item" v-text="item"></option>
+                                </select>
+                                <p> <img src="image/w1.png" alt=""><span style="font-family: 微软雅黑;">&nbsp;&nbsp;&nbsp;</span>位置数据类型:</p>
+                                <select class="addws" id='address' v-model="modifylist.address" autocomplete="off">   
+                                    <option v-for="item in places" v-bind:value="item" v-text="item"></option>
+                                </select>      
+                                <p> <img src="image/w1.png" alt=""><span style="font-family: 微软雅黑;">&nbsp;&nbsp;&nbsp;</span>工作空间名称:</p>
+                                <input type="text" class="addws" id='name' v-model="modifylist.name" autocomplete="off">
+                                                                    
+                                <p>
+                                    <button @click="changeActive" id='buto' value="取消" \>取消</button>
+                                    <button @click="modify" value="确定"  id='buto'>确定</button>
+                        
+                                </p>
+                        </div>
+                        </div>
+                    </div>`,
+            computed: {
+                modifylist() {
+                    console.log(this.list);
+                    return this.list;
+                }
+            },
+            methods: {
+                changeActive() {
+                    this.$emit('change');
+                },
+                modify() {
+                    this.$emit('modify', this.modifylist);
+                },
+                judge(event) {
+
+                    if (event.target.value === "机器人") {
+                        var sd = document.getElementById('sd');
+                        var sdd = document.getElementById('sdd');
+                        sd.style.display = "none"
+                        sdd.style = "display:none"
+                    } else if (event.target.value === "调度系统") {
+                        var sd = document.getElementById('sd');
+                        var sdd = document.getElementById('sdd');
+                        sd.style = "display:block"
+                        sdd.style = "display:block"
+
+                    }
+                },
+
+            }
+        });
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                isActive: false,
+                isActivee: false,
+                selected: -1,
+                selectedlist: {},
+                selectedliste: {},
+                slist: [],
+                places: [],
+                change_a: false,
+                searchelist: [],
+                robots: [
+
+                ],
+                list: [
+
+                ]
+            },
+            created() {
+                this.setSlist(this.list);
+            },
+            methods: {
+                // 修改数据
+                showOverlaye(index) {
+                    this.selected = index;
+                    this.selectedliste = this.list[index];
+                    var s3 = document.getElementById("ntable");
+                    if (s3.rows[index + 1].cells[4].innerHTML === "调度系统") {
+                        this.change_a = true
+                    } else if (s3.rows[index + 1].cells[4].innerHTML === "机器人") {
+                        this.change_a = false
+
+                    }
+                    this.changeOverlaye();
+                },
+                use(index) {
+                    localStorage.setItem("b", this.list[index].name);
+                },
+                // 确认修改按钮
+                modifye(arr) {
+                    console.log(arr);
+                    if (this.selected > -1) {
+                        console.log(123);
+                        Vue.set(this.list, this.selected, arr)
+                    } else {
+                        if (this.change_a) {
+                            var type2 = "ddxt"
+                        } else {
+                            var type2 = "jq"
+                        }
+                        this.list.push(arr);
+                        var that = this;
+                        const params = new URLSearchParams();
+
+                      
+                        params.append('robot', arr.name,);
+                      
+                        axios.post("/admin/setrobot", params, {
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            }
+                        })
+                            .then(function (response) {
+                                console.log("change", response.msg);
+                            })
+                            .catch(function (err) { })
+                    }
+                    this.setSlist(this.list);
+                    this.changeOverlaye();
+                    var sd = document.getElementById('sd');
+                    var sdd = document.getElementById('sdd');
+                    sd.style = "display:block"
+                    sd.style.textIndent = "-30px"
+                    sdd.style = "display:block"
+                },
+                // 修改数据
+                showOverlay(index) {
+
+                    this.selected = index;
+                    this.selectedlist = this.list[index];
+                    this.changeOverlay();
+                },
+                // 增加工作空间按钮
+                modify(arr) {
+                    if (this.selected > -1) {
+                        Vue.set(this.list, this.selected, arr)
+                    } else {
+                        var sdd = document.getElementById('sdd');
+                        var ip = document.getElementById('ip');
+                        var name = document.getElementById('name');
+                        var address = document.getElementById('address');
+                        var jiaohu = document.getElementById('jiaohu');
+                        var s3 = document.getElementById("ntable");
+                        if (jiaohu.value === '' || ip.value === '' || address.value === '' || jiaohu.value === '' || name.value === '') {
+                            alert("请检查信息是否填写完整")
+                            return false
+                        }
+
+                        for (var i = 0; i < s3.rows.length - 1; i++) {
+                            if (this.list[i].name === name.value) {
+                                alert('当前工作空间名称已重复')
+                                return false
+                            }
+                            if (jiaohu.value === '机器人' && this.list[i].ip === ip.value) {
+                                alert('当前ip地址已重复')
+                                return false
+
+                            }
+                        }
+
+                        var that = this;
+                        const params = new URLSearchParams();
+                        params.append('ip', arr.ip,);
+                        params.append('direction', arr.jiaohu,);
+                        params.append('type', "gzkj",);
+                        params.append('name', arr.name,);
+                        params.append('position', arr.address,);
+                        params.append('db', arr.duixiang,);
+                        axios.post("add", params, {
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            }
+                        })
+                            .then(function (response) {
+                                if (response.data != "OK") {
+                                    return false;
+                                }
+                                // that.slist.push(arr);
+                            })
+                            .catch(function (err) { })
+                    }
+
+                    this.list.push(arr);
+                    this.setSlist(this.list);
+                    this.changeOverlay();
+                    var sd = document.getElementById('sd');
+                    var sdd = document.getElementById('sdd');
+                    sd.style = "display:block"
+                    sd.style.textIndent = "-30px"
+                    sdd.style = "display:block"
+                },
+                add: function () {
+                    this.selectedlist = {
+                        jiaohu: '',
+                        address: '',
+                        ip: '',
+                        name: '',
+                        duixang: '',
+
+                    };
+                    this.isActive = true;
+                },
+                // delete list in index location
+                del(index) {
+                    var that = this;
+                    const params = new URLSearchParams();
+                    params.append('name', that.list[index].name,);
+                    params.append('type', "gzkj",);
+                    axios.post("del", params, {
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        }
+                    })
+                        .then(function (response) {
+
+                        })
+                        .catch(function (err) { })
+                    this.list.splice(index, 1);
+                    this.setSlist(this.list);
+                },
+                changeOverlay() {
+                    this.isActive = !this.isActive;
+                },
+                changeOverlaye() {
+                    this.isActivee = !this.isActivee;
+                },
+                // 获取需要渲染到页面中的数据
+                setSlist(arr) {
+                    this.slist = JSON.parse(JSON.stringify(arr));
+                },
+            },
+        })
+    </script>
+    <script>
+        var txt;
+        var jiaohu = document.getElementById('jiaohu');
+
+        function txtblur(event) {
+           
+            var txt = event.value //ip
+            if (jiaohu.value === "机器人") {
+                const params = new URLSearchParams();
+                if (txt != "127.0.0.1") {
+                    alert("请检查ip是否正确")
+                    return;
+                }
+                params.append('ip', txt,);
+                
+                axios.post("/admin/setip", params, //获取机器人组
+                    {
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        }
+                    })
+                    .then(function (response) {
+                        app.places = response.data["param-types"];
+
+
+                    })
+                    .catch(function (err) { })
+                //当前元素失去焦点
+            } 
+
+        }
+
+        function getlocation(event) {
+            var that = this
+            var ip = document.getElementById("ip").value;
+            // var ip = ip1.rows
+            const params = new URLSearchParams();
+            params.append('name', event.value,);
+            params.append('ip', ip,);
+
+            if (event.value == null) {
+                alert("请选择机器人组")
+                return;
+            }
+
+            axios.post("getplaces", params, {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+                .then(function (response) {
+                    app.places = response.data["param-types"];
+                    console.log("409");
+                    console.log(app.places);
+                })
+                .catch(function (err) { })
+        }
+
+        window.onload = function () {
+            axios.get('getWork')
+                .then(function (response) {
+                    if (JSON.stringify(response.data) === '{}') {
+                        app.setSlist(app.list)
+                        return;
+                    }
+                    console.log('返回值:', JSON.stringify(response.data))
+                    app.list = response.data.work
+                    app.setSlist(app.list)
+                })
+                .catch(function (err) { })
+        }
+    </script>
+
+</body>
+
+</html>

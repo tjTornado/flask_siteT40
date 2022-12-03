@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery.cookie.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="style/login.css" rel="stylesheet" type="text/css" />
+    <title>MOVER site T40</title>
+</head>
+
+<body>
+    <div class="logim">
+
+    </div>
+
+    <div class="title1">
+
+        <div class="form" id="form">
+            <input type="text" id="username" style="background-image: url(image/user.png); " placeholder="用户名" onchange="b(this.value)" v-model="userName" autocomplete="off">
+
+            <input type="password" id="password" style="background-image: url(image/mm.png);" placeholder="密码" v-model="pwd" onchange="c(this.value)">
+
+
+            <input type="button" value="登录" style="color: white;background-color: #08243a;text-indent: 0em;" @click='Admin()' />
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript" src="js/vue.js"></script>
+<script src="js/axios.min.js"></script>
+
+<script>
+    var login = new Vue({
+        el: '#form',
+        data: {
+            userName: '',
+            pwd: '',
+            returnarr: '',
+        },
+        methods: {
+            //1.点击事件函数，点击登录  数据传到服务器端看是否注册过。
+            Admin() {
+
+                // if(this.userName=="2021"&&this.pwd=="2021"){
+                //   location.href="muser.html";
+                //   return;
+                // }
+                if (password.value == "" || username.value == "") {
+                    alert("请检查信息是否填写完整");
+                    return;
+                }
+
+                if (this.userName == "admin") {
+                    if (this.pwd == "abc789") {
+                        location.href = "workspace.html";
+                        addCookie('userid', login.userName, 10)
+                    } else {
+                        alert('管理员密码有误')
+                        return;
+                    }
+                    return;
+                }
+                if (this.userName == "user") {
+                    if (this.pwd == "000000") {
+                        location.href = "Susetup.html";
+                        addCookie('userid', login.userName, 10)
+                    } else {
+                        alert('超市用户密码有误')
+                        return;
+                    }
+                    return;
+                }
+                this.sendData()
+            },
+            sendData() {
+                var that = this;
+                const params = new URLSearchParams();
+                params.append('username', this.userName, );
+                params.append('password', this.pwd);
+                axios.post(
+                        'Login', params, {
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            }
+                        }
+
+                    )
+                    .then(function(response) {
+                        var res = response.data;
+                        console.log(res);
+                        if (res == "ok") {
+                            location.href = "uoperation.html";
+                            addCookie('userid', login.userName, 10)
+                        } else if (res == "um") {
+                            alert('您输入的账号或密码有误')
+                        } else if (res == "ps") {
+                            alert('您输入的账号或密码有误')
+                        }
+                    })
+                    .catch(function(err) {})
+
+            }
+        },
+    })
+</script>
+<script>
+    var uname;
+    var psw;
+    var password = document.getElementById('password')
+    var username = document.getElementById('username')
+
+    function b(b) {
+        uname = b;
+    }
+
+    function c(c) {
+        psw = c;
+    }
+</script>
+<script>
+    //添加cookie
+    function addCookie(name, value, expiresHours) {
+        var cookieString = name + "=" + encodeURI(value);
+        //判断是否设置过期时间 
+        if (expiresHours > 0) {
+            var date = new Date();
+            date.setTime(date.getTime + expiresHours * 3600 * 1000);
+            cookieString = cookieString + "; expires=" + date.toGMTString();
+        }
+        document.cookie = cookieString;
+    }
+</script>
+
+</html>
